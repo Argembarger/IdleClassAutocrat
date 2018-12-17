@@ -1,7 +1,7 @@
 function idleClassAutocrat() {    
     // The Idle Class Autocrat
     // made with luv by argembarger
-    // v1.3.1, made for The Idle Class v0.4.3
+    // v1.3.2, made for The Idle Class v0.4.3
     // USE AT OWN RISK -- feel free to steal
     // not responsible if your game gets hurt >_>
     // Export Early / Export Often
@@ -216,14 +216,13 @@ function idleClassAutocrat() {
         if(currAcq.sold() == false && currAcq.currentEmployees.val() == 0) {
             currAcq.sell();
         }
-		
-		// AutoBankruptcy
-		// "game.stats()[40].val()" is the current bankruptcy bonus
-		// By default, declare bankruptcy when next bonus will be double the current bonus.
-		if(game.locked().bankruptcy == false && game.nextBankruptcyBonus.val() > game.stats()[40].val()) {
-			game.restartGame();
-		}
     }
+	// AutoBankruptcy
+	// "game.stats()[40].val()" is the current bankruptcy bonus
+	// By default, declare bankruptcy when next bonus will be double the current bonus.
+	if(game.locked().bankruptcy == false && game.nextBankruptcyBonus.val() > game.stats()[40].val()) {
+		game.restartGame();
+	}
 }
 
 setInterval(function() {
