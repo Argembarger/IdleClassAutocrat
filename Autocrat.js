@@ -77,17 +77,17 @@ function idleClassAutocrat() {
 			if(game.research().active() == true)  { game.research().toggleProduction(); }
 			else { game.research().sellPatents(); }
 		} else if(game.research().active() == false) {
-			if(game.research().intern() < game.units.peek(0)[0].num.val() - 1) {
-			    game.research().intern(game.units.peek(0)[0].num.val() - 1);
+			if(game.research().intern() < game.units.peek(0)[0].num.val()) {
+			    game.research().intern(game.units.peek(0)[0].num.val());
 			}
-			if(game.research().wage() < game.units.peek(0)[1].num.val() - 1) {
-			    game.research().wage(game.units.peek(0)[1].num.val() - 1);
+			if(game.research().wage() < game.units.peek(0)[1].num.val()) {
+			    game.research().wage(game.units.peek(0)[1].num.val());
 			}
-			if(game.research().sales() < game.units.peek(0)[2].num.val() - 1) {
-			    game.research().sales(game.units.peek(0)[2].num.val() - 1);
+			if(game.research().sales() < game.units.peek(0)[2].num.val()) {
+			    game.research().sales(game.units.peek(0)[2].num.val());
 			}
-			if(game.research().manager() < game.units.peek(0)[3].num.val() - 1) {
-			    game.research().manager(game.units.peek(0)[3].num.val() - 1);
+			if(game.research().manager() < game.units.peek(0)[3].num.val()) {
+			    game.research().manager(game.units.peek(0)[3].num.val());
 			}
 			game.research().toggleProduction(); 
 		}
