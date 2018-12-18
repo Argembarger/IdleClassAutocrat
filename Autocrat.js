@@ -148,7 +148,7 @@ function idleClassAutocrat() {
 						if(sorted[j].targetTime == game.activeInvestments()[i].targetTime) {
 							acquired = true;
 							break;
-						} else if(sorted[j].timeRemaining < game.activeInvestments()[i].targetTime * 0.5) {
+						} else if(sorted[j].timeRemaining < game.activeInvestments()[i].targetTime) {
 							break;
 						}
 					}
