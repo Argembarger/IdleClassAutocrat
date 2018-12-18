@@ -157,7 +157,9 @@ function idleClassAutocrat() {
 					} else {
 						game.activeInvestments()[i].handleAcquisition();
 					}
-				} else {
+				} else if(game.pendingAcquisitionCount.val() == 0) {
+					// ONLY pay out if there ISN'T a currently-pending acquisition.
+					// If an acquisition is actively paying out, do nothing, simply wait.
 					game.activeInvestments()[i].handlePayout();
 				}
 			}
