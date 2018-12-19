@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.1, made for The Idle Class v0.4.4
+// v3.0.2, made for The Idle Class v0.4.4
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -280,31 +280,32 @@ class IdleClassAutocrat {
 					this.currProcessHandle = setInterval(this.autoUntilEmails.bind(this), DISPLAY_LOOP_INTERVAL);
 					break;
 				case 1: // Wait for emails before changing loop to pre-R&D loop.
-					if(game.locked().mail === true) { this.currProcess = 0; break; }
+					if(game.locked().mail === true) { break; }
 					this.currProcess = 2;
 					clearInterval(this.currProcessHandle);
 					this.currProcessHandle = setInterval(this.autoUntilResearchAndDevelopment.bind(this), DISPLAY_LOOP_INTERVAL);
 					break;
 				case 2: // Wait for R&D before changing loop to pre-Investments loop.
-					if(game.locked().research === true) { this.currProcess = 0; break; }
+					if(game.locked().research === true) { break; }
 					this.currProcess = 3;
 					clearInterval(this.currProcessHandle);
 					this.currProcessHandle = setInterval(this.autoUntilInvestments.bind(this), DISPLAY_LOOP_INTERVAL);
 					break;
 				case 3: // Wait for Investments before changing loop to pre-Acquisitions loop.
-					if(game.locked().investments === true) { this.currProcess = 0; break; }
+					if(game.locked().investments === true) { break; }
 					this.currProcess = 4;
 					clearInterval(this.currProcessHandle);
 					this.currProcessHandle = setInterval(this.autoUntilAcquisitions.bind(this), DISPLAY_LOOP_INTERVAL);
 					break;
 				case 4: // Wait for Acquisitions before changing loop to pre-Bankruptcy loop
-					if(game.locked().acquisitions === true) { this.currProcess = 0; break; }
+					if(game.locked().acquisitions === true) { break; }
 					this.currProcess = 5;
 					clearInterval(this.currProcessHandle);
 					this.currProcessHandle = setInterval(this.autoUntilBankruptcy.bind(this), DISPLAY_LOOP_INTERVAL);
 					break;
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
-					if(game.locked().bankruptcy === true) { this.currProcess = 0; break; }
+					if(game.locked().mail === true) { this.currProcess = 0; break; }
+					if(game.locked().bankruptcy === true) { break; }
 					// "game.stats()[40].val()" is the current bankruptcy bonus
 					// By default, declare bankruptcy when next bonus will be double the current bonus.
 					if(game.nextBankruptcyBonus.val() > game.stats()[40].val() * this.bankruptcyResetFraction) {
