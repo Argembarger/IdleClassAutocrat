@@ -3,6 +3,9 @@ The Autocrat, an automation tool for the idle game The Idle Class by Small Gray 
 
 Made for fun by Argembarger in December 2018.
 
+V1 is old legacy version all in one function.
+V2 is classed-up version. Simple unscientific testing indicates that V2 is about 1/3 faster than V1. May not work on very old browsers.
+
 This tool basically handles everything in the game, including the bankruptcy loop. It tries not to spend more than 10% of your money on anything. It's certainly not an optimized system, and there are many manual decisions you can make to speed up progression, which I think is one of the nice things about this tool. There are also some achievements in the game that you would probably want to do without this tool enabled.
 
 Instructions are in the script itself, but the basic gist is that you can just paste it into the developer console on your browser after the game loads, and it will start doing its thing. You can feel free to modify any setting or tweak the system to your liking, just read through the code. 
