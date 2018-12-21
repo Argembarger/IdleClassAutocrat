@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.3, made for The Idle Class v0.4.4
+// v3.0.4, made for The Idle Class v0.4.4
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -71,7 +71,7 @@ class IdleClassAutocrat {
 			// Try to buy first employee of each type right away, though.
 			for(let i = 0; i <= 11; i++) {
 				this.currEmployee = game.units.peek(0)[i];
-				if(this.currEmployee.num.val() == 0 && (this.currEmployee.price.val() <= game.currentCash.val())) {
+				if(this.currEmployee.num.val() <= 4 && (this.currEmployee.price.val() <= game.currentCash.val())) {
 					this.currEmployee.buy();
 				} else if(this.currEmployee.price.val() < (game.currentCash.val() * this.employeeSpendFraction)) {
 					this.currEmployee.buy();
