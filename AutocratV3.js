@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.4, made for The Idle Class v0.4.4
+// v3.0.4, last tested with The Idle Class v0.5.0
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -12,7 +12,7 @@
 // Instructions: just copy this entire text file (ctrl-a, ctrl-c)
 // and paste it (ctrl-v) into the console, and hit enter to submit
 // (Use F12 to access developer console on most browsers)
-// Only paste once! Unless you're a cheater :D
+// Only paste once!
 //
 // IMPORTANT NOTES:
 // You have to re-inject this code on every refresh.
@@ -21,15 +21,21 @@
 // Clearing the page's cache data through the browser can restore function if your save file gets corrupted and it fails to load.
 class IdleClassAutocrat {
 	constructor() {
-		this.currOuterProcessHandle = 0;
-		this.currProcess = 0;
-		this.currProcessHandle = 0;
-		this.upgradeSpendFraction = 0.1;
-		this.employeeSpendFraction = 0.01;
-		this.acquisitionStopHiringFraction = 0.666;
-		this.bankruptcyResetFraction = 1.0;
-		this.currUpgrade;
-		this.currEmployee;
+		// THE FOLLOWING 6 VALUES CAN BE TWEAKED TO YOUR LIKING
+		// FEEL FREE TO TWEAK IF YOU FEEL LIKE THINGS ARE TOO SLOW
+		// Especially the bankruptcy modifier...
+		// Early on, a higher employee/upgrade spend may be desirable.
+		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
+		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
+		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money
+		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money
+		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6%
+		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier
+		this.currOuterProcessHandle = 0; // Everything else is private
+		this.currProcess = 0; // PRIVATE
+		this.currProcessHandle = 0; // PRIVATE
+		this.currUpgrade; // STILL PRIVATE
+		this.currEmployee; // ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
 		this.autoBusinessWords = ['synergy', 'downsize', 'bandwidth', 'stakeholders', 'shareolders', 'clients', 'customers', 'profits', 'ROI', 'ideate', 'ideation', 'globalization', 'evergreen', 'disruptive', 'disrupt', 'innovation', 'innovate', 'dynamism', 'millennial', 'holistic', 'paradigm', 'wheelhouse', 'B2B', 'B2C', 'analytics', 'brand', 'branding', 'hyperlocal', 'optimization', 'client', 'customer', 'profit', 'outsourcing', 'outsource', 'startup', 'marketing', 'sales', 'agile', 'mission', 'executive', 'stocks', 'investments', 'investment', 'shares', 'valuation',  'investment', 'shareholders', 'BYOD', 'advertainment', 'marketing', 'deliverable', 'actionable', 'hacking', 'KPI', 'pivot', 'leverage', 'startup', 'downsizing', 'outsourcing', 'unicorn', 'SEO', 'wunderkind', 'market', 'EBITDA', 'ASAP', 'EOD', 'actionable', 'action', 'influencer', 'CTR', 'gamified', 'gamification', 'revenue', 'overhead'];
 		this.currMail;
 		this.invBought;
@@ -274,37 +280,37 @@ class IdleClassAutocrat {
 			this.autoDivest();
 			this.autoMicromanage();
 		};
-		// Function to manage state of DISPLAY_LOOP_INTERVAL (100 ms) inner loop
+		// Function to manage state of autocratInnerLoopMillis inner loop
 		this.autoAutocrat = function() { // fractionOfCurrentBankruptcyBonus
 			switch(this.currProcess) {
 				case 0: // Not running; new Autocrat state. Clear any existing loop and start pre-email loop.
 					this.currProcess = 1;
 					if(this.currProcessHandle !== 0) { clearInterval(this.currProcessHandle); }
-					this.currProcessHandle = setInterval(this.autoUntilEmails.bind(this), DISPLAY_LOOP_INTERVAL);
+					this.currProcessHandle = setInterval(this.autoUntilEmails.bind(this), this.autocratInnerLoopMillis);
 					break;
 				case 1: // Wait for emails before changing loop to pre-R&D loop.
 					if(game.locked().mail === true) { break; }
 					this.currProcess = 2;
 					clearInterval(this.currProcessHandle);
-					this.currProcessHandle = setInterval(this.autoUntilResearchAndDevelopment.bind(this), DISPLAY_LOOP_INTERVAL);
+					this.currProcessHandle = setInterval(this.autoUntilResearchAndDevelopment.bind(this), this.autocratInnerLoopMillis);
 					break;
 				case 2: // Wait for R&D before changing loop to pre-Investments loop.
 					if(game.locked().research === true) { break; }
 					this.currProcess = 3;
 					clearInterval(this.currProcessHandle);
-					this.currProcessHandle = setInterval(this.autoUntilInvestments.bind(this), DISPLAY_LOOP_INTERVAL);
+					this.currProcessHandle = setInterval(this.autoUntilInvestments.bind(this), this.autocratInnerLoopMillis);
 					break;
 				case 3: // Wait for Investments before changing loop to pre-Acquisitions loop.
 					if(game.locked().investments === true) { break; }
 					this.currProcess = 4;
 					clearInterval(this.currProcessHandle);
-					this.currProcessHandle = setInterval(this.autoUntilAcquisitions.bind(this), DISPLAY_LOOP_INTERVAL);
+					this.currProcessHandle = setInterval(this.autoUntilAcquisitions.bind(this), this.autocratInnerLoopMillis);
 					break;
 				case 4: // Wait for Acquisitions before changing loop to pre-Bankruptcy loop
 					if(game.locked().acquisitions === true) { break; }
 					this.currProcess = 5;
 					clearInterval(this.currProcessHandle);
-					this.currProcessHandle = setInterval(this.autoUntilBankruptcy.bind(this), DISPLAY_LOOP_INTERVAL);
+					this.currProcessHandle = setInterval(this.autoUntilBankruptcy.bind(this), this.autocratInnerLoopMillis);
 					break;
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
 					if(game.locked().mail === true) { this.currProcess = 0; break; }
@@ -321,10 +327,10 @@ class IdleClassAutocrat {
 			}
 		};
 		
-		// Function to lazily kick off CHECK_LOOP_INTERVAL (2500 ms) outer loop
+		// Function to lazily kick off autocratManageLoopMillis outer loop
 		this.autoAutoAutocrat = function() {
 			if(this.currOuterProcessHandle !== 0) { clearInterval(this.currOuterProcessHandle); }
-			this.currOuterProcessHandle = setInterval(this.autoAutocrat.bind(this), CHECK_LOOP_INTERVAL);
+			this.currOuterProcessHandle = setInterval(this.autoAutocrat.bind(this), this.autocratManageLoopMillis);
 		};
 	}
 	
