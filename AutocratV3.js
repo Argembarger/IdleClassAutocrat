@@ -29,7 +29,7 @@ class IdleClassAutocrat {
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
 		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money
 		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money
-		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6%
+		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops hiring acq employees at less than 66.6%
 		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
