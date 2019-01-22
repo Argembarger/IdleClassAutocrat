@@ -113,13 +113,13 @@ class IdleClassAutocrat {
 					if(game.research().intern() < game.units.peek(0)[0].num.val() && game.research().intern() == minEmp) {
 						game.research().intern(1.0+game.research().intern());
 					}
-					if(game.research().intern() < game.units.peek(0)[1].num.val() && game.research().wage() == minEmp) {
+					if(game.research().wage() < game.units.peek(0)[1].num.val() && game.research().wage() == minEmp) {
 						game.research().wage(1.0+game.research().wage());
 					}
-					if(game.research().intern() < game.units.peek(0)[2].num.val() && game.research().sales() == minEmp) {
+					if(game.research().sales() < game.units.peek(0)[2].num.val() && game.research().sales() == minEmp) {
 						game.research().sales(1.0+game.research().sales());
 					}
-					if(game.research().intern() < game.units.peek(0)[3].num.val() && game.research().manager() == minEmp) {
+					if(game.research().manager() < game.units.peek(0)[3].num.val() && game.research().manager() == minEmp) {
 						game.research().manager(1.0+game.research().manager());
 					}
 				}
