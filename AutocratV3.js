@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.4, last tested with The Idle Class v0.5.0
+// v3.0.5, last tested with The Idle Class v0.5.0
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -27,10 +27,11 @@ class IdleClassAutocrat {
 		// Early on, a higher employee/upgrade spend may be desirable.
 		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
-		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money
-		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money
+		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money, RATIO VALUE, 0.67 = 67%
+		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money, RATIO VALUE, 0.67 = 67%
+		this.maxAllowableRisk = 0.0; // Default 0.0, stops R&D hiring above this value, PERCENTAGE VALUE, 67.0 = 67%
 		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6%
-		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier
+		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier, RATIO VALUE, 0.67 = 67%
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
 		this.currProcessHandle = 0; // PRIVATE
@@ -107,19 +108,24 @@ class IdleClassAutocrat {
 				if(game.research().active() === true)  { game.research().toggleProduction(); }
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
-				if(game.research().intern() < game.units.peek(0)[0].num.val()) {
-					game.research().intern(game.units.peek(0)[0].num.val());
+				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
+					var minEmp = Math.min(game.research().intern(), game.research().wage(), game.research().manager(), game.research().sales());
+					if(game.research().intern() == minEmp) {
+						game.research().intern(game.research().intern() + 1);
+					}
+					if(game.research().wage() == minEmp) {
+						game.research().wage(game.research().wage() + 1);
+					}
+					if(game.research().sales() == minEmp) {
+						game.research().sales(game.research().sales() + 1);
+					}
+					if(game.research().manager() == minEmp) {
+						game.research().manager(game.research().manager() + 1);
+					}
 				}
-				if(game.research().wage() < game.units.peek(0)[1].num.val()) {
-					game.research().wage(game.units.peek(0)[1].num.val());
+				else { // Toggle production when risk is reached
+					game.research().toggleProduction(); 
 				}
-				if(game.research().sales() < game.units.peek(0)[2].num.val()) {
-					game.research().sales(game.units.peek(0)[2].num.val());
-				}
-				if(game.research().manager() < game.units.peek(0)[3].num.val()) {
-					game.research().manager(game.units.peek(0)[3].num.val());
-				}
-				game.research().toggleProduction(); 
 			}
 		};
 		this.autoInvest = function() {
