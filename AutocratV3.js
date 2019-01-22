@@ -109,16 +109,16 @@ class IdleClassAutocrat {
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
-					var minEmp = Math.min(game.research().intern(), game.research().wage(), /*game.research().manager(),*/ game.research().sales());
+					var minEmp = Math.min(game.research().intern(), game.research().wage()/*, game.research().manager(), game.research().sales()*/);
 					if(game.research().intern() < game.units.peek(0)[0].num.val() - 1 && game.research().intern() == minEmp) {
 						game.research().intern(parseInt(game.research().intern() + 1));
 					}
 					if(game.research().wage() < game.units.peek(0)[1].num.val() - 1 && game.research().wage() == minEmp) {
 						game.research().wage(parseInt(game.research().wage() + 1));
 					}
-					if(game.research().sales() < game.units.peek(0)[2].num.val() - 1 && game.research().sales() == minEmp) {
-						game.research().sales(parseInt(game.research().sales() + 1));
-					}
+					//if(game.research().sales() < game.units.peek(0)[2].num.val() - 1 && game.research().sales() == minEmp) {
+					//	game.research().sales(parseInt(game.research().sales() + 1));
+					//}
 					//if(game.research().manager() < game.units.peek(0)[3].num.val() - 1 && game.research().manager() == minEmp) {
 					//	game.research().manager(parseInt(game.research().manager() + 1));
 					//}
