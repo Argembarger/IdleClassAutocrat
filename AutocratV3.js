@@ -119,9 +119,9 @@ class IdleClassAutocrat {
 					if(game.research().sales() < game.units.peek(0)[2].num.val() - 1 && game.research().sales() == minEmp) {
 						game.research().sales(game.research().sales() + 1);
 					}
-					if(game.research().manager() < game.units.peek(0)[3].num.val() - 1 && game.research().manager() == minEmp) {
-						game.research().manager(game.research().manager() + 1);
-					}
+					//if(game.research().manager() < game.units.peek(0)[3].num.val() - 1 && game.research().manager() == minEmp) {
+					//	game.research().manager(game.research().manager() + 1);
+					//}
 				}
 				else { // Toggle production when risk is reached
 					game.research().toggleProduction(); 
