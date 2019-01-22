@@ -109,18 +109,26 @@ class IdleClassAutocrat {
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
-					if(game.research().intern() < game.units.peek(0)[0].num.val() - 1) {
+					var hiredSomeone = false;
+					if(game.research().intern() < game.units.peek(0)[0].num.val()) {
 						game.research().intern(parseInt(game.research().intern() + 1));
+						hiredSomeone = true;
 					}
-					if(game.research().wage() < game.units.peek(0)[1].num.val() - 1) {
+					if(game.research().wage() < game.units.peek(0)[1].num.val()) {
 						game.research().wage(parseInt(game.research().wage() + 1));
+						hiredSomeone = true;
 					}
-					//if(game.research().sales() < game.units.peek(0)[2].num.val() - 1) {
+					//if(game.research().sales() < game.units.peek(0)[2].num.val()) {
 					//	game.research().sales(parseInt(game.research().sales() + 1));
+					//	hiredSomeone = true;
 					//}
-					//if(game.research().manager() < game.units.peek(0)[3].num.val() - 1) {
+					//if(game.research().manager() < game.units.peek(0)[3].num.val()) {
 					//	game.research().manager(parseInt(game.research().manager() + 1));
+					//	hiredSomeone = true;
 					//}
+					if(hiredSomeone == false) { // Toggle production when no one to hire
+						game.research().toggleProduction(); 
+					}
 				}
 				else { // Toggle production when risk is reached
 					game.research().toggleProduction(); 
