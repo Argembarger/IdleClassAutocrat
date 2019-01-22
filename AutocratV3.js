@@ -27,10 +27,10 @@ class IdleClassAutocrat {
 		// Early on, a higher employee/upgrade spend may be desirable.
 		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
-		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money, RATIO VALUE, 0.67 = 67%
-		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money, RATIO VALUE, 0.67 = 67%
-		this.maxAllowableRisk = 0.0; // Default 0.0, stops R&D hiring above this value, PERCENTAGE VALUE, 67.0 = 67%
-		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6%
+		this.upgradeSpendFraction = 1.0; // Default 1.0, willing to spend 100% on upgrades, RATIO VALUE, 0.67 = 67%
+		this.employeeSpendFraction = 0.1; // Default 0.1, willing to spend 10% on employees, RATIO VALUE, 0.67 = 67%
+		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
+		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6% progress, RATIO VALUE, 0.67 = 67%
 		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier, RATIO VALUE, 0.67 = 67%
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
@@ -111,16 +111,16 @@ class IdleClassAutocrat {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
 					var minEmp = Math.min(game.research().intern(), game.research().wage(), game.research().manager(), game.research().sales());
 					if(game.research().intern() == minEmp) {
-						game.research().intern(game.research().intern() + 1);
+						game.research().intern(++game.research().intern());
 					}
 					if(game.research().wage() == minEmp) {
-						game.research().wage(game.research().wage() + 1);
+						game.research().wage(++game.research().wage());
 					}
 					if(game.research().sales() == minEmp) {
-						game.research().sales(game.research().sales() + 1);
+						game.research().sales(++game.research().sales());
 					}
 					if(game.research().manager() == minEmp) {
-						game.research().manager(game.research().manager() + 1);
+						game.research().manager(++game.research().manager());
 					}
 				}
 				else { // Toggle production when risk is reached
