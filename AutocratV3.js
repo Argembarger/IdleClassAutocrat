@@ -109,7 +109,7 @@ class IdleClassAutocrat {
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
-					var minEmp = Math.min(game.research().intern(), game.research().wage(), game.research().manager(), game.research().sales());
+					var minEmp = Math.min(game.research().intern(), game.research().wage(), /*game.research().manager(),*/ game.research().sales());
 					if(game.research().intern() < game.units.peek(0)[0].num.val() - 1 && game.research().intern() == minEmp) {
 						game.research().intern(game.research().intern() + 1);
 					}
