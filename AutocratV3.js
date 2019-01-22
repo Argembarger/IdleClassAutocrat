@@ -110,16 +110,16 @@ class IdleClassAutocrat {
 			} else if(game.research().active() === false) {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
 					var minEmp = Math.min(game.research().intern(), game.research().wage(), game.research().manager(), game.research().sales());
-					if(game.research().intern() == minEmp) {
+					if(game.research().intern() < game.units.peek(0)[0].num.val() && game.research().intern() == minEmp) {
 						game.research().intern(1.0+game.research().intern());
 					}
-					if(game.research().wage() == minEmp) {
+					if(game.research().intern() < game.units.peek(0)[1].num.val() && game.research().wage() == minEmp) {
 						game.research().wage(1.0+game.research().wage());
 					}
-					if(game.research().sales() == minEmp) {
+					if(game.research().intern() < game.units.peek(0)[2].num.val() && game.research().sales() == minEmp) {
 						game.research().sales(1.0+game.research().sales());
 					}
-					if(game.research().manager() == minEmp) {
+					if(game.research().intern() < game.units.peek(0)[3].num.val() && game.research().manager() == minEmp) {
 						game.research().manager(1.0+game.research().manager());
 					}
 				}
