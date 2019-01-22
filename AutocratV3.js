@@ -111,16 +111,16 @@ class IdleClassAutocrat {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
 					var minEmp = Math.min(game.research().intern(), game.research().wage(), game.research().manager(), game.research().sales());
 					if(game.research().intern() == minEmp) {
-						game.research().intern(++game.research().intern());
+						game.research().intern(1.0+game.research().intern());
 					}
 					if(game.research().wage() == minEmp) {
-						game.research().wage(++game.research().wage());
+						game.research().wage(1.0+game.research().wage());
 					}
 					if(game.research().sales() == minEmp) {
-						game.research().sales(++game.research().sales());
+						game.research().sales(1.0+game.research().sales());
 					}
 					if(game.research().manager() == minEmp) {
-						game.research().manager(++game.research().manager());
+						game.research().manager(1.0+game.research().manager());
 					}
 				}
 				else { // Toggle production when risk is reached
