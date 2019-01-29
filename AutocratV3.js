@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.5, last tested with The Idle Class v0.5.0
+// v3.0.6, last tested with The Idle Class v0.5.0
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -28,10 +28,10 @@ class IdleClassAutocrat {
 		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
 		this.upgradeSpendFraction = 1.0; // Default 1.0, willing to spend 100% on upgrades, RATIO VALUE, 0.67 = 67%
-		this.employeeSpendFraction = 0.1; // Default 0.1, willing to spend 10% on employees, RATIO VALUE, 0.67 = 67%
+		this.employeeSpendFraction = 0.999; // Default 0.999, willing to spend 99.9% on employees, RATIO VALUE, 0.67 = 67%
 		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
 		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6% progress, RATIO VALUE, 0.67 = 67%
-		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier, RATIO VALUE, 0.67 = 67%
+		this.bankruptcyResetFraction = 0.1; // Default 0.1, makes every bankruptcy 110%, RATIO VALUE, 0.67 = 67%
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
 		this.currProcessHandle = 0; // PRIVATE
@@ -328,9 +328,9 @@ class IdleClassAutocrat {
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
 					if(game.locked().mail === true) { this.currProcess = 0; break; }
 					if(game.locked().bankruptcy === true) { break; }
-					// "game.stats()[40].val()" is the current bankruptcy bonus
+					// "game.stats()[39].val()" is the current bankruptcy bonus
 					// By default, declare bankruptcy when next bonus will be double the current bonus.
-					if(game.nextBankruptcyBonus.val() > game.stats()[40].val() * this.bankruptcyResetFraction) {
+					if(game.nextBankruptcyBonus.val() > game.stats()[39].val() * this.bankruptcyResetFraction) {
 						this.currProcess = 0;
 						game.restartGame();
 					}
