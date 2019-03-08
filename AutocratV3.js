@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.6, last tested with The Idle Class v0.5.0
+// v3.1.0, last tested with The Idle Class v0.5.3
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -15,9 +15,10 @@
 // Only paste once!
 //
 // IMPORTANT NOTES:
+// You can change any of the below values at runtime through the console by inputting activeIdleClassAutocrat.<desiredStatName>
 // You have to re-inject this code on every refresh.
 // I have observed page-cache-wrecking errors on occasion, not sure if it's this script or just me messing around while making it.
-// I recommend exporting your save and refreshing the page before declaring bankruptcy.
+// I recommend exporting your save once in a while
 // Clearing the page's cache data through the browser can restore function if your save file gets corrupted and it fails to load.
 class IdleClassAutocrat {
 	constructor() {
@@ -32,12 +33,20 @@ class IdleClassAutocrat {
 		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
 		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6% progress, RATIO VALUE, 0.67 = 67%
 		this.bankruptcyResetFraction = 0.1; // Default 0.1, makes every bankruptcy 110%, RATIO VALUE, 0.67 = 67%
+		
+		// ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
+		this.autoBusinessWords = ['synergy', 'downsize', 'bandwidth', 'stakeholders', 'shareolders', 'clients', 'customers', 'profits', 'ROI', 'ideate', 'ideation', 'globalization', 'evergreen', 'disruptive', 'disrupt', 'innovation', 'innovate', 'dynamism', 'millennial', 'holistic', 'paradigm', 'wheelhouse', 'B2B', 'B2C', 'analytics', 'brand', 'branding', 'hyperlocal', 'optimization', 'client', 'customer', 'profit', 'outsourcing', 'outsource', 'startup', 'marketing', 'sales', 'agile', 'mission', 'executive', 'stocks', 'investments', 'investment', 'shares', 'valuation',  'investment', 'shareholders', 'BYOD', 'advertainment', 'marketing', 'deliverable', 'actionable', 'hacking', 'KPI', 'pivot', 'leverage', 'startup', 'downsizing', 'outsourcing', 'unicorn', 'SEO', 'wunderkind', 'market', 'EBITDA', 'ASAP', 'EOD', 'actionable', 'action', 'influencer', 'CTR', 'gamified', 'gamification', 'revenue', 'overhead'];
+		this.autoChatPhrases = ["... Are you seriously wasting my time like this?", ", I really don't want to hear about it.", ", do you feel ready to fire your friends?", ", you put our glorious company to shame.", "!! Guess what?? You are an ass!", ", have you considered getting back to work?", ": I love hearing from you, almost as much as I hate it.", " is such a freakin tool, I mean really, they... oh ww lol!", " -- this better be good news.", ": ¯\_(ツ)_/¯", ", hold on, I'm playing this idle game called The Idle Class", ", hold on, my Trimps are just about to hit my target zone...", "!! Guess what?? Hevipelle eats ass!"];
+		// Shamelessly stolen from game code
+		this.firstNames = [ 'John', 'Jane', 'Steve', 'Bill', 'Mark', 'Sheryl', 'Larry', 'Travis', 'George', 'Marissa', 'Jeff', 'Ken', 'Dara', 'Richard' ];
+		this.lastNames = [ 'Smith', 'Johnson', 'Jones', 'Williams', 'Taylor', 'Singh', 'Wang', 'Sato', 'Kim', 'Tremblay', 'Rodriguez', 'Martin', 'Rossi', 'Schmidt' ];
+		
+		// THE REST BELOW SHOULDN'T NEED TO BE MESSED WITH
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
 		this.currProcessHandle = 0; // PRIVATE
 		this.currUpgrade; // STILL PRIVATE
-		this.currEmployee; // ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
-		this.autoBusinessWords = ['synergy', 'downsize', 'bandwidth', 'stakeholders', 'shareolders', 'clients', 'customers', 'profits', 'ROI', 'ideate', 'ideation', 'globalization', 'evergreen', 'disruptive', 'disrupt', 'innovation', 'innovate', 'dynamism', 'millennial', 'holistic', 'paradigm', 'wheelhouse', 'B2B', 'B2C', 'analytics', 'brand', 'branding', 'hyperlocal', 'optimization', 'client', 'customer', 'profit', 'outsourcing', 'outsource', 'startup', 'marketing', 'sales', 'agile', 'mission', 'executive', 'stocks', 'investments', 'investment', 'shares', 'valuation',  'investment', 'shareholders', 'BYOD', 'advertainment', 'marketing', 'deliverable', 'actionable', 'hacking', 'KPI', 'pivot', 'leverage', 'startup', 'downsizing', 'outsourcing', 'unicorn', 'SEO', 'wunderkind', 'market', 'EBITDA', 'ASAP', 'EOD', 'actionable', 'action', 'influencer', 'CTR', 'gamified', 'gamification', 'revenue', 'overhead'];
+		this.currEmployee; // ETC.
 		this.currMail;
 		this.invBought;
 		this.invChecks;
@@ -46,17 +55,35 @@ class IdleClassAutocrat {
 		this.invFoundTarget;
 		this.invSorted;
 		this.invAcquired;
-		this.autoChatPhrases = ["... Are you seriously wasting my time like this?", ", I really don't want to hear about it.", ", do you feel ready to fire your friends?", ", you put our glorious company to shame.", "!! Guess what?? You are an ass!", ", have you considered getting back to work?", ": I love hearing from you, almost as much as I hate it.", " is such a freakin tool, I mean really, they... oh ww lol!", " -- this better be good news.", ": ¯\_(ツ)_/¯", ", hold on, I'm playing this idle game called The Idle Class", ", hold on, my Trimps are just about to hit my target zone...", "!! Guess what?? Hevipelle eats ass!"];
 		this.currAcq;
 		this.acqCurrWorker;
 		this.acqCurrChat;
 		this.acqCurrMail;
+		this.autocratSelfNaming = function() {
+			if(game.businessName().name() !== "Unnamed Business") return;
+			let pastBizCheckIndex = -1;
+			let maxKnownBusiness = -1;
+			while(pastBizCheckIndex < game.pastBusinesses().length - 1) {
+				pastBizCheckIndex = pastBizCheckIndex + 1;
+				let pastBizName = game.pastBusinesses()[pastBizCheckIndex].name;
+				if(pastBizName.startsWith("AutoBiz#")) {
+					let foundBiz = parseInt(pastBizName.substr(pastBizName.indexOf("#") + 1, pastBizName.length), 10);
+					if(foundBiz > maxKnownBusiness) maxKnownBusiness = foundBiz;
+				}
+			}
+			game.businessName().newName("AutoBiz#" + (maxKnownBusiness + 1));
+			game.businessName().save();
+		}
 		this.randomBizWord = function() {
 			return this.autoBusinessWords[Math.floor(Math.random()*this.autoBusinessWords.length)];
 		};
 		this.randomDialogue = function() {
 			return this.autoChatPhrases[Math.floor(Math.random()*this.autoChatPhrases.length)];
 		};
+		// Shamelessly stolen from game code
+		this.randomName = function() {
+       			return this.firstNames[Math.floor(Math.random() * this.firstNames.length)] + ' ' + this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
+  		};
 		
 		this.autoEarnDollars = function() {
 			game.addManualClicks();
@@ -118,10 +145,12 @@ class IdleClassAutocrat {
 						game.research().wage(parseInt(game.research().wage() + 1));
 						hiredSomeone = true;
 					}
+					// There is no need for autoselling.
 					//if(game.research().sales() < game.units.peek(0)[2].num.val()) {
 					//	game.research().sales(parseInt(game.research().sales() + 1));
 					//	hiredSomeone = true;
 					//}
+					// There is no need for storage.
 					//if(game.research().manager() < game.units.peek(0)[3].num.val()) {
 					//	game.research().manager(parseInt(game.research().manager() + 1));
 					//	hiredSomeone = true;
@@ -295,6 +324,7 @@ class IdleClassAutocrat {
 		};
 		// Function to manage state of autocratInnerLoopMillis inner loop
 		this.autoAutocrat = function() { // fractionOfCurrentBankruptcyBonus
+			this.autocratSelfNaming();
 			switch(this.currProcess) {
 				case 0: // Not running; new Autocrat state. Clear any existing loop and start pre-email loop.
 					this.currProcess = 1;
@@ -355,5 +385,5 @@ class IdleClassAutocrat {
 	}
 }
 
-// Kicks off the Autocrat.
+// Actually kicks off the Autocrat.
 var activeIdleClassAutocrat = IdleClassAutocrat.autoAutoAutoAutocrat();
