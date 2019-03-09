@@ -31,7 +31,7 @@ class IdleClassAutocrat {
 		this.upgradeSpendFraction = 1.0; // Default 1.0, willing to spend 100% on upgrades, RATIO VALUE, 0.67 = 67%
 		this.employeeSpendFraction = 0.999; // Default 0.999, willing to spend 99.9% on employees, RATIO VALUE, 0.67 = 67%
 		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
-		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops firing acq employees at less than 66.6% progress, RATIO VALUE, 0.67 = 67%
+		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops hiring acq employees at less than 66.6% workers remaining, RATIO VALUE, 0.67 = 67%
 		this.bankruptcyResetFraction = 0.1; // Default 0.1, makes every bankruptcy 110%, RATIO VALUE, 0.67 = 67%
 		
 		// ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
