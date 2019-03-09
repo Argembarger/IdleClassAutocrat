@@ -16,3 +16,9 @@ The code is comprised of the Autocrat function, which essentially checks every i
 When you're done using the tool, simply refresh the game window.
 
 I haven't noticed any problems in quite some time. It should be more or less safe on the game's save data, although I managed to corrupt the game tons of times while writing this, probing around the game's code willy-nilly :)
+
+CHANGELOG
+
+v3.1.0 - AutoBizName: Autocrat now tries to rename the business, but only if it is called "Unnamed Business". Naming follows the format "AutoBiz#X" from 0 to break_infinity.js, where X is the highest AutoBiz# found in the Past Businesses plus one. Robotic and soulless, just like business.
+
+v3.1.1 - AutoOutgoingMail: Sends randomized outgoing emails. Fancy delay so you can see what it's generating. Tries not to send an email that would be wasted due to no active investments/acquisitions. Sends HR emails if stress is greater than 50.

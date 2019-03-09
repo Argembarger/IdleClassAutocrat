@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.0.4, last tested with The Idle Class v0.5.0
+// v3.1.1, last tested with The Idle Class v0.5.3
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -15,9 +15,10 @@
 // Only paste once!
 //
 // IMPORTANT NOTES:
+// You can change any of the below values at runtime through the console by inputting activeIdleClassAutocrat.<desiredStatName>
 // You have to re-inject this code on every refresh.
 // I have observed page-cache-wrecking errors on occasion, not sure if it's this script or just me messing around while making it.
-// I recommend exporting your save and refreshing the page before declaring bankruptcy.
+// I recommend exporting your save once in a while
 // Clearing the page's cache data through the browser can restore function if your save file gets corrupted and it fails to load.
 class IdleClassAutocrat {
 	constructor() {
@@ -27,17 +28,29 @@ class IdleClassAutocrat {
 		// Early on, a higher employee/upgrade spend may be desirable.
 		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
-		this.upgradeSpendFraction = 0.1; // Default 0.1, buys upgrades with 10% of money
-		this.employeeSpendFraction = 0.01; // Default 0.01, buys employees with 1% of money
-		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops hiring acq employees at less than 66.6%
-		this.bankruptcyResetFraction = 1.0; // Default 1.0, tries to double bankruptcy multiplier
+
+		this.upgradeSpendFraction = 1.0; // Default 1.0, willing to spend 100% on upgrades, RATIO VALUE, 0.67 = 67%
+		this.employeeSpendFraction = 0.999; // Default 0.999, willing to spend 99.9% on employees, RATIO VALUE, 0.67 = 67%
+		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
+		this.acquisitionStopHiringFraction = 0.666; // Default 0.666, stops hiring acq employees at less than 66.6% workers remaining, RATIO VALUE, 0.67 = 67%
+		this.bankruptcyResetFraction = 0.1; // Default 0.1, makes every bankruptcy 110%, RATIO VALUE, 0.67 = 67%
+		
+		// ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
+		this.autoBusinessWords = ['synergy', 'downsize', 'bandwidth', 'stakeholders', 'shareolders', 'clients', 'customers', 'profits', 'ROI', 'ideate', 'ideation', 'globalization', 'evergreen', 'disruptive', 'disrupt', 'innovation', 'innovate', 'dynamism', 'millennial', 'holistic', 'paradigm', 'wheelhouse', 'B2B', 'B2C', 'analytics', 'brand', 'branding', 'hyperlocal', 'optimization', 'client', 'customer', 'profit', 'outsourcing', 'outsource', 'startup', 'marketing', 'sales', 'agile', 'mission', 'executive', 'stocks', 'investments', 'investment', 'shares', 'valuation',  'investment', 'shareholders', 'BYOD', 'advertainment', 'marketing', 'deliverable', 'actionable', 'hacking', 'KPI', 'pivot', 'leverage', 'startup', 'downsizing', 'outsourcing', 'unicorn', 'SEO', 'wunderkind', 'market', 'EBITDA', 'ASAP', 'EOD', 'actionable', 'action', 'influencer', 'CTR', 'gamified', 'gamification', 'revenue', 'overhead'];
+		this.autoChatPhrases = ["... Are you seriously wasting my time like this?", ", I really don't want to hear about it.", ", do you feel ready to fire your friends?", ", you put our glorious company to shame.", "!! Guess what?? You are an ass!", ", have you considered getting back to work?", ": I love hearing from you, almost as much as I hate it.", " is such a freakin tool, I mean really, they... oh ww lol!", " -- this better be good news.", ": ¯\_(ツ)_/¯", ", hold on, I'm playing this idle game called The Idle Class", ", hold on, my Trimps are just about to hit my target zone...", "!! Guess what?? Hevipelle eats ass!"];
+		// Shamelessly stolen from game code
+		this.firstNames = [ 'John', 'Jane', 'Steve', 'Bill', 'Mark', 'Sheryl', 'Larry', 'Travis', 'George', 'Marissa', 'Jeff', 'Ken', 'Dara', 'Richard' ];
+		this.lastNames = [ 'Smith', 'Johnson', 'Jones', 'Williams', 'Taylor', 'Singh', 'Wang', 'Sato', 'Kim', 'Tremblay', 'Rodriguez', 'Martin', 'Rossi', 'Schmidt' ];
+		
+		// THE REST BELOW SHOULDN'T NEED TO BE MESSED WITH
 		this.currOuterProcessHandle = 0; // Everything else is private
 		this.currProcess = 0; // PRIVATE
 		this.currProcessHandle = 0; // PRIVATE
 		this.currUpgrade; // STILL PRIVATE
-		this.currEmployee; // ONES WITH LISTS OF WORDS AND PHRASES CAN BE EDITED OR ADDED TO IF YOU FANCY
-		this.autoBusinessWords = ['synergy', 'downsize', 'bandwidth', 'stakeholders', 'shareolders', 'clients', 'customers', 'profits', 'ROI', 'ideate', 'ideation', 'globalization', 'evergreen', 'disruptive', 'disrupt', 'innovation', 'innovate', 'dynamism', 'millennial', 'holistic', 'paradigm', 'wheelhouse', 'B2B', 'B2C', 'analytics', 'brand', 'branding', 'hyperlocal', 'optimization', 'client', 'customer', 'profit', 'outsourcing', 'outsource', 'startup', 'marketing', 'sales', 'agile', 'mission', 'executive', 'stocks', 'investments', 'investment', 'shares', 'valuation',  'investment', 'shareholders', 'BYOD', 'advertainment', 'marketing', 'deliverable', 'actionable', 'hacking', 'KPI', 'pivot', 'leverage', 'startup', 'downsizing', 'outsourcing', 'unicorn', 'SEO', 'wunderkind', 'market', 'EBITDA', 'ASAP', 'EOD', 'actionable', 'action', 'influencer', 'CTR', 'gamified', 'gamification', 'revenue', 'overhead'];
+		this.currEmployee; // ETC.
 		this.currMail;
+		this.currOutgoing;
+		this.outgoingMailDelay = 0;
 		this.invBought;
 		this.invChecks;
 		this.invTargetMins;
@@ -45,17 +58,35 @@ class IdleClassAutocrat {
 		this.invFoundTarget;
 		this.invSorted;
 		this.invAcquired;
-		this.autoChatPhrases = ["... Are you seriously wasting my time like this?", ", I really don't want to hear about it.", ", do you feel ready to fire your friends?", ", you put our glorious company to shame.", "!! Guess what?? You are an ass!", ", have you considered getting back to work?", ": I love hearing from you, almost as much as I hate it.", " is such a freakin tool, I mean really, they... oh ww lol!", " -- this better be good news.", ": ¯\_(ツ)_/¯", ", hold on, I'm playing this idle game called The Idle Class", ", hold on, my Trimps are just about to hit my target zone...", "!! Guess what?? Hevipelle eats ass!"];
 		this.currAcq;
 		this.acqCurrWorker;
 		this.acqCurrChat;
 		this.acqCurrMail;
+		this.autocratSelfNaming = function() {
+			if(game.businessName().name() !== "Unnamed Business") return;
+			let pastBizCheckIndex = -1;
+			let maxKnownBusiness = -1;
+			while(pastBizCheckIndex < game.pastBusinesses().length - 1) {
+				pastBizCheckIndex = pastBizCheckIndex + 1;
+				let pastBizName = game.pastBusinesses()[pastBizCheckIndex].name;
+				if(pastBizName.startsWith("AutoBiz#")) {
+					let foundBiz = parseInt(pastBizName.substr(pastBizName.indexOf("#") + 1, pastBizName.length), 10);
+					if(foundBiz > maxKnownBusiness) maxKnownBusiness = foundBiz;
+				}
+			}
+			game.businessName().newName("AutoBiz#" + (maxKnownBusiness + 1));
+			game.businessName().save();
+		}
 		this.randomBizWord = function() {
 			return this.autoBusinessWords[Math.floor(Math.random()*this.autoBusinessWords.length)];
 		};
 		this.randomDialogue = function() {
 			return this.autoChatPhrases[Math.floor(Math.random()*this.autoChatPhrases.length)];
 		};
+		// Shamelessly stolen from game code
+		this.randomName = function() {
+       			return this.firstNames[Math.floor(Math.random() * this.firstNames.length)] + ' ' + this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
+  		};
 		
 		this.autoEarnDollars = function() {
 			game.addManualClicks();
@@ -85,6 +116,7 @@ class IdleClassAutocrat {
 			}
 		};
 		this.autoMail = function() {
+			this.autoOutgoingMail();
 			// Automatically replies to emails with "<sender_name>: <string_of_biz_babble>"
 			for(let i = game.mail().length - 1; i >= 0; i--) {
 				this.currMail = game.mail()[i];
@@ -99,6 +131,40 @@ class IdleClassAutocrat {
 				this.currMail.respond();
 			}
 		};
+		this.autoOutgoingMail = function() {
+			// Send random emails to departments unless stress is above 50% (then spam to HR)
+			if(game.locked().outgoingMail === false && game.composedMail().resting() === false && this.outgoingMailDelay === 0) {
+				this.outgoingMailDelay = 1;
+				this.currOutgoing = game.composedMail();
+				if(this.currOutgoing.stressLevel.val() > 50) {
+					// Human Resources
+					this.currOutgoing.selectedDepartment('3');
+				} else {
+					// Random other. 0 = investments, 1 = r&d, 2 = acquisitions. R&D is available before investments.
+					let r = Math.random();
+					// No acquisitions; constrain to [0...0.666], or 1 or 0
+					if(game.activeInvestments().length === 0) { r = r * 0.666; }
+					// No investments; additionally constrain to [0...0.333], or just 1
+					if(game.activeInvestments().length === 0) { r = r * 0.5; }
+					this.currOutgoing.selectedDepartment((r <= 0.333) ? '1' : ((r <= 0.666) ? '0' : '2'));
+					r = Math.random();
+					this.currOutgoing.selectedUrgency((r <= 0.333) ? '1' : ((r <= 0.666) ? '0' : '2'));
+				}
+				this.currOutgoing.to(this.randomName());
+				this.currOutgoing.subject(this.randomDialogue());
+				while(this.currOutgoing.message().length < 180) { 
+					this.currOutgoing.message(this.currOutgoing.message() + " " + this.randomBizWord());
+				}
+				setTimeout(this.autoSendMail, 2000);
+				setTimeout(this.autoStopWaitingForMail, 5000);
+			}	
+		}
+		this.autoSendMail = function() {
+			game.composedMail().send();
+		};
+		this.autoStopWaitingForMail = function() {
+			activeIdleClassAutocrat.outgoingMailDelay = 0;
+		};
 		this.autoScience = function() {
 			// Disables research to sell patents
 			// Assigns employees only when research disabled (no cheating!)
@@ -107,19 +173,33 @@ class IdleClassAutocrat {
 				if(game.research().active() === true)  { game.research().toggleProduction(); }
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
-				if(game.research().intern() < game.units.peek(0)[0].num.val()) {
-					game.research().intern(game.units.peek(0)[0].num.val());
+				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
+					let hiredSomeone = false;
+					if(game.research().intern() < game.units.peek(0)[0].num.val()) {
+						game.research().intern(parseInt(game.research().intern() + 1));
+						hiredSomeone = true;
+					}
+					if(game.research().wage() < game.units.peek(0)[1].num.val()) {
+						game.research().wage(parseInt(game.research().wage() + 1));
+						hiredSomeone = true;
+					}
+					// There is no need for autoselling.
+					//if(game.research().sales() < game.units.peek(0)[2].num.val()) {
+					//	game.research().sales(parseInt(game.research().sales() + 1));
+					//	hiredSomeone = true;
+					//}
+					// There is no need for storage.
+					//if(game.research().manager() < game.units.peek(0)[3].num.val()) {
+					//	game.research().manager(parseInt(game.research().manager() + 1));
+					//	hiredSomeone = true;
+					//}
+					if(hiredSomeone == false) { // Toggle production when no one to hire
+						game.research().toggleProduction(); 
+					}
 				}
-				if(game.research().wage() < game.units.peek(0)[1].num.val()) {
-					game.research().wage(game.units.peek(0)[1].num.val());
+				else { // Toggle production when risk is reached
+					game.research().toggleProduction(); 
 				}
-				if(game.research().sales() < game.units.peek(0)[2].num.val()) {
-					game.research().sales(game.units.peek(0)[2].num.val());
-				}
-				if(game.research().manager() < game.units.peek(0)[3].num.val()) {
-					game.research().manager(game.units.peek(0)[3].num.val());
-				}
-				game.research().toggleProduction(); 
 			}
 		};
 		this.autoInvest = function() {
@@ -282,6 +362,7 @@ class IdleClassAutocrat {
 		};
 		// Function to manage state of autocratInnerLoopMillis inner loop
 		this.autoAutocrat = function() { // fractionOfCurrentBankruptcyBonus
+			this.autocratSelfNaming();
 			switch(this.currProcess) {
 				case 0: // Not running; new Autocrat state. Clear any existing loop and start pre-email loop.
 					this.currProcess = 1;
@@ -315,9 +396,9 @@ class IdleClassAutocrat {
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
 					if(game.locked().mail === true) { this.currProcess = 0; break; }
 					if(game.locked().bankruptcy === true) { break; }
-					// "game.stats()[40].val()" is the current bankruptcy bonus
+					// "game.stats()[39].val()" is the current bankruptcy bonus
 					// By default, declare bankruptcy when next bonus will be double the current bonus.
-					if(game.nextBankruptcyBonus.val() > game.stats()[40].val() * this.bankruptcyResetFraction) {
+					if(game.nextBankruptcyBonus.val() > game.stats()[39].val() * this.bankruptcyResetFraction) {
 						this.currProcess = 0;
 						game.restartGame();
 					}
@@ -342,5 +423,5 @@ class IdleClassAutocrat {
 	}
 }
 
-// Kicks off the Autocrat.
+// Actually kicks off the Autocrat.
 var activeIdleClassAutocrat = IdleClassAutocrat.autoAutoAutoAutocrat();
