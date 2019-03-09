@@ -28,7 +28,6 @@ class IdleClassAutocrat {
 		// Early on, a higher employee/upgrade spend may be desirable.
 		this.autocratManageLoopMillis = 2500; // Default 2500, runs an Autocrat update every 2.5 seconds
 		this.autocratInnerLoopMillis = 100; // Default 100, does individual Autocrat actions every 0.1 seconds
-
 		this.upgradeSpendFraction = 1.0; // Default 1.0, willing to spend 100% on upgrades, RATIO VALUE, 0.67 = 67%
 		this.employeeSpendFraction = 0.999; // Default 0.999, willing to spend 99.9% on employees, RATIO VALUE, 0.67 = 67%
 		this.maxAllowableRisk = 0.0; // Default 0.0%, stops R&D hiring above this risk value, PERCENTAGE VALUE, 67.0 = 67%
