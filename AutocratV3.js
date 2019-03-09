@@ -1,7 +1,7 @@
 "use strict";
 // The Idle Class Autocrat
 // made with luv by argembarger
-// v3.1.0, last tested with The Idle Class v0.5.3
+// v3.1.1, last tested with The Idle Class v0.5.3
 // USE AT OWN RISK -- feel free to steal
 // not responsible if your game gets hurt >_>
 // Export Early / Export Often
@@ -48,6 +48,8 @@ class IdleClassAutocrat {
 		this.currUpgrade; // STILL PRIVATE
 		this.currEmployee; // ETC.
 		this.currMail;
+		this.currOutgoing;
+		this.outgoingMailDelay = 0;
 		this.invBought;
 		this.invChecks;
 		this.invTargetMins;
@@ -113,6 +115,7 @@ class IdleClassAutocrat {
 			}
 		};
 		this.autoMail = function() {
+			this.autoOutgoingMail();
 			// Automatically replies to emails with "<sender_name>: <string_of_biz_babble>"
 			for(let i = game.mail().length - 1; i >= 0; i--) {
 				this.currMail = game.mail()[i];
@@ -127,6 +130,40 @@ class IdleClassAutocrat {
 				this.currMail.respond();
 			}
 		};
+		this.autoOutgoingMail = function() {
+			// Send random emails to departments unless stress is above 50% (then spam to HR)
+			if(game.locked().outgoingMail === false && game.composedMail().resting() === false && this.outgoingMailDelay === 0) {
+				this.outgoingMailDelay = 1;
+				this.currOutgoing = game.composedMail();
+				if(this.currOutgoing.stressLevel.val() > 50) {
+					// Human Resources
+					this.currOutgoing.selectedDepartment('3');
+				} else {
+					// Random other. 0 = investments, 1 = r&d, 2 = acquisitions. R&D is available before investments.
+					let r = Math.random();
+					// No acquisitions; constrain to [0...0.666], or 1 or 0
+					if(game.activeInvestments().length === 0) { r = r * 0.666; }
+					// No investments; additionally constrain to [0...0.333], or just 1
+					if(game.activeInvestments().length === 0) { r = r * 0.5; }
+					this.currOutgoing.selectedDepartment((r <= 0.333) ? '1' : ((r <= 0.666) ? '0' : '2'));
+					r = Math.random();
+					this.currOutgoing.selectedUrgency((r <= 0.333) ? '1' : ((r <= 0.666) ? '0' : '2'));
+				}
+				this.currOutgoing.to(this.randomName());
+				this.currOutgoing.subject(this.randomDialogue());
+				while(this.currOutgoing.message().length < 180) { 
+					this.currOutgoing.message(this.currOutgoing.message() + " " + this.randomBizWord());
+				}
+				setTimeout(this.autoSendMail, 2000);
+				setTimeout(this.autoStopWaitingForMail, 5000);
+			}	
+		}
+		this.autoSendMail = function() {
+			game.composedMail().send();
+		};
+		this.autoStopWaitingForMail = function() {
+			activeIdleClassAutocrat.outgoingMailDelay = 0;
+		};
 		this.autoScience = function() {
 			// Disables research to sell patents
 			// Assigns employees only when research disabled (no cheating!)
@@ -136,7 +173,7 @@ class IdleClassAutocrat {
 				else { game.research().sellPatents(); }
 			} else if(game.research().active() === false) {
 				if(game.research().risk.baseVal() <= this.maxAllowableRisk) {
-					var hiredSomeone = false;
+					let hiredSomeone = false;
 					if(game.research().intern() < game.units.peek(0)[0].num.val()) {
 						game.research().intern(parseInt(game.research().intern() + 1));
 						hiredSomeone = true;
