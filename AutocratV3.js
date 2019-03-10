@@ -149,8 +149,9 @@ class IdleClassAutocrat {
 					r = Math.random();
 					this.currOutgoing.selectedUrgency((r <= 0.333) ? '1' : ((r <= 0.666) ? '0' : '2'));
 				}
-				this.currOutgoing.to(this.randomName());
-				this.currOutgoing.subject(this.randomDialogue());
+				let rando = this.randomName();
+				this.currOutgoing.to(rando);
+				this.currOutgoing.subject(rando + this.randomDialogue());
 				while(this.currOutgoing.message().length < 180) { 
 					this.currOutgoing.message(this.currOutgoing.message() + " " + this.randomBizWord());
 				}
