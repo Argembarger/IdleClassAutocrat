@@ -396,9 +396,9 @@ class IdleClassAutocrat {
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
 					if(game.locked().mail === true) { this.currProcess = 0; break; }
 					if(game.locked().bankruptcy === true) { break; }
-					// "game.stats()[39].val()" is the current bankruptcy bonus
+					// "game.stats()[38].val()" is the current bankruptcy bonus
 					// By default, declare bankruptcy when next bonus will be double the current bonus.
-					if(game.nextBankruptcyBonus.val() > game.stats()[39].val() * this.bankruptcyResetFraction) {
+					if(game.nextBankruptcyBonus.val() > game.stats()[38].val() * this.bankruptcyResetFraction) {
 						this.currProcess = 0;
 						game.restartGame();
 					}
