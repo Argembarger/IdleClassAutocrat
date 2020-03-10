@@ -140,7 +140,7 @@ class IdleClassAutocrat {
 				this.currOutgoing = game.composedMail();
 				if(this.currOutgoing.stressLevel.val() > 50) {
 					// Human Resources
-					this.currOutgoing.selectedDepartment('3');
+					this.currOutgoing.selectedDepartment('4');
 				} else {
 					// Random other. 0 = investments, 1 = r&d, 2 = acquisitions. R&D is available before investments.
 					let r = Math.random();
