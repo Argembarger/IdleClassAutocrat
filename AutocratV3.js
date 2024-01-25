@@ -42,7 +42,7 @@ class IdleClassAutocrat {
 		this.firstNames = [ 'John', 'Jane', 'Steve', 'Bill', 'Mark', 'Sheryl', 'Larry', 'Travis', 'George', 'Marissa', 'Jeff', 'Ken', 'Dara', 'Richard' ];
 		this.lastNames = [ 'Smith', 'Johnson', 'Jones', 'Williams', 'Taylor', 'Singh', 'Wang', 'Sato', 'Kim', 'Tremblay', 'Rodriguez', 'Martin', 'Rossi', 'Schmidt' ];
 		
-		this.currentBankruptcyStatsIndex = 38; // Current bankruptcy bonus in game.stats()[]
+		this.currentBankruptcyStatsIndex = 38; // Current bankruptcy bonus in game.stats[]
 		
 		// THE REST BELOW SHOULDN'T NEED TO BE MESSED WITH
 		this.currOuterProcessHandle = 0; // Everything else is private
@@ -399,7 +399,7 @@ class IdleClassAutocrat {
 				case 5: // Wait until bankruptcy, then wait for conditions, before declaring bankruptcy and restarting loop.
 					if(game.locked().mail === true) { this.currProcess = 0; break; }
 					if(game.locked().bankruptcy === true) { break; }
-					if(game.nextBankruptcyBonus.val() > game.stats()[this.currentBankruptcyStatsIndex].val() * this.bankruptcyResetFraction) {
+					if(game.nextBankruptcyBonus.val() > game.stats[this.currentBankruptcyStatsIndex].val() * this.bankruptcyResetFraction) {
 						this.currProcess = 0;
 						game.restartGame();
 					}
